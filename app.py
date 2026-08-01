@@ -4,7 +4,7 @@ import pandas as pd
 from typing import Literal
 import pickle
 
-model=pickle.load("ml_mb_model.pkl")
+model=pickle.load(open(".pkl","rb"))
 
 class User(BaseModel):
     neighbourhood_group:str=Literal['Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Bronx']
