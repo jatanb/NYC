@@ -4,7 +4,17 @@ import pandas as pd
 from typing import Literal
 import pickle
 
-model=pickle.load(open(".pkl","rb"))
+import sys
+# 1. Force the dummy class into sys.modules before any pickle execution
+import sklearn.compose._column_transformer
+
+class DummyRemainderColsList(list):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+sklearn.compose._column_transformer._RemainderColsList = DummyRemainderColsList
+
+model=pickle.load(open("logistic_model.pkl","rb"))
 
 class User(BaseModel):
     neighbourhood_group:str=Literal['Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Bronx']
@@ -252,7 +262,7 @@ def predict(data:User):
     input_df=pd.DataFrame([
         {
             "neighbourhood_group":data.neighbourhood_group,
-            "neghbourhood":data.neighbourhood,
+            "neighbourhood":data.neighbourhood,
             "latitude":data.latitude,
             "longitude":data.longitude,
             "price":data.price,
@@ -266,4 +276,4 @@ def predict(data:User):
 
     prediction=model.predict(input_df)[0]
 
-    return {'messege':prediction}
+    return {'message':prediction}
