@@ -18,7 +18,7 @@ model=pickle.load(open("logistic_model.pkl","rb"))
 
 class User(BaseModel):
     neighbourhood_group:str=Literal['Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Bronx']
-    neighbourhood:str=
+    neighbourhood:str
     latitude:float=Field(...,gt=0)
     longitude:float=Field(...,gt=0)
     price:int=Field(...,gt=0)
