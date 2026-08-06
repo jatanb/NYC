@@ -14,7 +14,7 @@ class DummyRemainderColsList(list):
 
 sklearn.compose._column_transformer._RemainderColsList = DummyRemainderColsList
 
-model=pickle.load(open("logistic_model.pkl","rb"))
+model=pickle.load(open("l_model.pkl","rb"))
 
 class User(BaseModel):
     neighbourhood_group:str=Literal['Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Bronx']
