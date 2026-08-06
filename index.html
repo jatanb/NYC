@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Type Predictor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Room Type Predictor</h1>
+        <p class="subtitle">Enter listing details to predict the room type</p>
+        
+        <form id="predictionForm">
+            <div class="form-grid">
+                <!-- Neighbourhood Group -->
+                <div class="form-group">
+                    <label for="neighbourhood_group">Neighbourhood Group</label>
+                    <select id="neighbourhood_group" required>
+                        <option value="" disabled selected>Select Group</option>
+                        <option value="Brooklyn">Brooklyn</option>
+                        <option value="Manhattan">Manhattan</option>
+                        <option value="Queens">Queens</option>
+                        <option value="Staten Island">Staten Island</option>
+                        <option value="Bronx">Bronx</option>
+                    </select>
+                </div>
+
+                <!-- Neighbourhood -->
+                <div class="form-group">
+                    <label for="neighbourhood">Neighbourhood</label>
+                    <input type="text" id="neighbourhood" placeholder="e.g., Williamsburg" required>
+                </div>
+
+                <!-- Latitude -->
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="number" id="latitude" step="any" min="0.000001" placeholder="e.g., 40.7128" required>
+                </div>
+
+                <!-- Longitude -->
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="number" id="longitude" step="any" min="0.000001" placeholder="e.g., -74.0060" required>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="price">Price ($)</label>
+                    <input type="number" id="price" min="1" placeholder="e.g., 150" required>
+                </div>
+
+                <!-- Minimum Nights -->
+                <div class="form-group">
+                    <label for="minimum_nights">Minimum Nights</label>
+                    <input type="number" id="minimum_nights" min="0" placeholder="e.g., 2" required>
+                </div>
+
+                <!-- Number of Reviews -->
+                <div class="form-group">
+                    <label for="number_of_reviews">Number of Reviews</label>
+                    <input type="number" id="number_of_reviews" min="0" placeholder="e.g., 45" required>
+                </div>
+
+                <!-- Reviews Per Month -->
+                <div class="form-group">
+                    <label for="reviews_per_month">Reviews Per Month</label>
+                    <input type="number" id="reviews_per_month" min="0" placeholder="e.g., 2" required>
+                </div>
+
+                <!-- Host Listings Count -->
+                <div class="form-group">
+                    <label for="calculated_host_listings_count">Host Listings Count</label>
+                    <input type="number" id="calculated_host_listings_count" min="0" placeholder="e.g., 1" required>
+                </div>
+
+                <!-- Availability 365 -->
+                <div class="form-group">
+                    <label for="availability_365">Availability (0-365)</label>
+                    <input type="number" id="availability_365" min="0" max="365" placeholder="e.g., 240" required>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">Predict Room Type</button>
+        </form>
+
+        <div id="resultContainer" class="result-card hidden">
+            <h3>Prediction Result:</h3>
+            <div id="resultValue" class="result-value"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
