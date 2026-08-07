@@ -1,123 +1,165 @@
+const API_URL = "http://127.0.0.1:8000";
+// ↑ For Render, change this to:
+// const API_URL = "https://your-fastapi-app.onrender.com";
+
+
 document.getElementById("predictionForm").addEventListener("submit", async function (e) {
+
     e.preventDefault();
 
     const submitBtn = document.getElementById("submitBtn");
     const resultContainer = document.getElementById("resultContainer");
-    const resultValue = document.getElementById("resultValue");
+    const emptyResult = document.getElementById("emptyResult");
 
-    // Optional elements for the new result UI
+    const resultValue = document.getElementById("resultValue");
     const resultIcon = document.getElementById("resultIcon");
     const resultDescription = document.getElementById("resultDescription");
+    const resultStatus = document.getElementById("resultStatus");
+    const errorMessage = document.getElementById("errorMessage");
 
-    // Gather data exactly as FastAPI Pydantic schema expects
+
+    // --------------------------------
+    // GET USER INPUT
+    // --------------------------------
+
     const payload = {
-        neighbourhood_group: document.getElementById("neighbourhood_group").value,
-        neighbourhood: document.getElementById("neighbourhood").value.trim(),
 
-        latitude: parseFloat(
-            document.getElementById("latitude").value
-        ),
+        neighbourhood_group:
+            document.getElementById("neighbourhood_group").value,
 
-        longitude: parseFloat(
-            document.getElementById("longitude").value
-        ),
+        neighbourhood:
+            document.getElementById("neighbourhood").value.trim(),
 
-        price: parseInt(
-            document.getElementById("price").value,
-            10
-        ),
+        latitude:
+            parseFloat(
+                document.getElementById("latitude").value
+            ),
 
-        minimum_nights: parseInt(
-            document.getElementById("minimum_nights").value,
-            10
-        ),
+        longitude:
+            parseFloat(
+                document.getElementById("longitude").value
+            ),
 
-        number_of_reviews: parseInt(
-            document.getElementById("number_of_reviews").value,
-            10
-        ),
+        price:
+            parseInt(
+                document.getElementById("price").value,
+                10
+            ),
 
-        reviews_per_month: parseFloat(
-            document.getElementById("reviews_per_month").value
-        ),
+        minimum_nights:
+            parseInt(
+                document.getElementById("minimum_nights").value,
+                10
+            ),
 
-        calculated_host_listings_count: parseInt(
-            document.getElementById("calculated_host_listings_count").value,
-            10
-        ),
+        number_of_reviews:
+            parseInt(
+                document.getElementById("number_of_reviews").value,
+                10
+            ),
 
-        availability_365: parseInt(
-            document.getElementById("availability_365").value,
-            10
-        )
+        reviews_per_month:
+            parseFloat(
+                document.getElementById("reviews_per_month").value
+            ),
+
+        calculated_host_listings_count:
+            parseInt(
+                document.getElementById(
+                    "calculated_host_listings_count"
+                ).value,
+                10
+            ),
+
+        availability_365:
+            parseInt(
+                document.getElementById("availability_365").value,
+                10
+            )
     };
 
-    // Loading state
-    submitBtn.textContent = "Predicting...";
-    submitBtn.disabled = true;
 
-    resultContainer.classList.add("hidden");
+    // --------------------------------
+    // CLEAR OLD ERROR
+    // --------------------------------
+
+    errorMessage.textContent = "";
+
+
+    // --------------------------------
+    // LOADING STATE
+    // --------------------------------
+
+    submitBtn.disabled = true;
+    submitBtn.classList.add("loading");
+
 
     try {
 
-        /*
-         * LOCAL:
-         * http://127.0.0.1:8000/predict
-         *
-         * DEPLOYED:
-         * Change this to your Render FastAPI URL.
-         */
-        const response = await fetch("http://127.0.0.1:8000/predict", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
+        // --------------------------------
+        // SEND DATA TO FASTAPI
+        // --------------------------------
 
-        // Get JSON response
+        const response = await fetch(
+            `${API_URL}/predict`,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(payload)
+            }
+        );
+
+
+        // --------------------------------
+        // READ RESPONSE
+        // --------------------------------
+
         const result = await response.json();
+
+
+        // --------------------------------
+        // HANDLE API ERROR
+        // --------------------------------
 
         if (!response.ok) {
 
-            let errorMessage = "Server error.";
+            let message = "Something went wrong.";
 
             if (Array.isArray(result.detail)) {
-                errorMessage = result.detail
+
+                message = result.detail
                     .map(error => error.msg)
                     .join(", ");
+
             } else if (result.detail) {
-                errorMessage = result.detail;
+
+                message = result.detail;
+
             }
 
-            throw new Error(errorMessage);
+            throw new Error(message);
         }
 
-        /*
-         * FastAPI returns:
-         *
-         * {
-         *     "message": "Private room"
-         * }
-         *
-         * or
-         *
-         * {
-         *     "message": "Shared room"
-         * }
-         *
-         * or
-         *
-         * {
-         *     "message": "Entire home/apt"
-         * }
-         */
 
-        const prediction = String(result.message).trim().toLowerCase();
+        // --------------------------------
+        // GET MODEL PREDICTION
+        // --------------------------------
+
+        const prediction =
+            String(result.message)
+                .trim()
+                .toLowerCase();
+
 
         let displayName;
         let icon;
         let description;
+        let type;
+
 
         // --------------------------------
         // SHARED ROOM
@@ -127,11 +169,12 @@ document.getElementById("predictionForm").addEventListener("submit", async funct
 
             displayName = "Shared Room";
             icon = "👥";
+            type = "shared";
 
             description =
                 "Your property is predicted to be a shared room.";
-
         }
+
 
         // --------------------------------
         // PRIVATE ROOM
@@ -141,11 +184,12 @@ document.getElementById("predictionForm").addEventListener("submit", async funct
 
             displayName = "Private Room";
             icon = "🔒";
+            type = "private";
 
             description =
                 "Your property is predicted to be a private room.";
-
         }
+
 
         // --------------------------------
         // ENTIRE HOME / APARTMENT
@@ -159,57 +203,160 @@ document.getElementById("predictionForm").addEventListener("submit", async funct
 
             displayName = "Entire Home / Apartment";
             icon = "🏠";
+            type = "entire";
 
             description =
                 "Your property is predicted to be an entire home or apartment.";
-
         }
 
+
         // --------------------------------
-        // UNKNOWN MODEL OUTPUT
+        // UNKNOWN OUTPUT
         // --------------------------------
 
         else {
 
             displayName = result.message;
             icon = "✦";
+            type = "";
 
             description =
                 "The AI model returned a room type prediction.";
-
         }
 
-        // Put prediction into result box
+
+        // --------------------------------
+        // UPDATE RESULT UI
+        // --------------------------------
+
         resultValue.textContent = displayName;
 
-        // If these elements exist in your HTML,
-        // update them too.
-        if (resultIcon) {
-            resultIcon.textContent = icon;
-        }
+        resultIcon.textContent = icon;
 
-        if (resultDescription) {
-            resultDescription.textContent = description;
-        }
+        resultDescription.textContent = description;
 
-        // Show result
+
+        // --------------------------------
+        // SHOW RESULT
+        // --------------------------------
+
+        emptyResult.classList.add("hidden");
+
         resultContainer.classList.remove("hidden");
+
+
+        // --------------------------------
+        // GREEN STATUS DOT
+        // --------------------------------
+
+        resultStatus.style.background = "#34d399";
+
+        resultStatus.style.boxShadow =
+            "0 0 12px #34d399";
+
+
+        // --------------------------------
+        // HIGHLIGHT PREDICTED TYPE
+        // --------------------------------
+
+        document
+            .querySelectorAll(".type-option")
+            .forEach(option => {
+
+                option.classList.remove("active");
+
+                if (option.dataset.type === type) {
+
+                    option.classList.add("active");
+
+                }
+            });
+
 
     } catch (error) {
 
-        console.error("Prediction error:", error);
+        // --------------------------------
+        // ERROR HANDLING
+        // --------------------------------
 
-        alert(
-            "Failed to get prediction.\n\n" +
-            error.message +
-            "\n\nPlease make sure your FastAPI server is running."
+        console.error(
+            "Prediction error:",
+            error
         );
 
-    } finally {
 
-        // Restore button
-        submitBtn.textContent = "Predict Room Type";
+        errorMessage.textContent =
+            "Prediction failed: " +
+            error.message;
+
+
+        resultStatus.style.background =
+            "#ef4444";
+
+        resultStatus.style.boxShadow =
+            "0 0 12px #ef4444";
+    }
+
+
+    finally {
+
+        // --------------------------------
+        // RESTORE BUTTON
+        // --------------------------------
+
         submitBtn.disabled = false;
 
+        submitBtn.classList.remove("loading");
     }
-})
+
+});
+
+
+// --------------------------------
+// RESET BUTTON
+// --------------------------------
+
+document
+    .getElementById("resetBtn")
+    .addEventListener("click", function () {
+
+        document
+            .getElementById("predictionForm")
+            .reset();
+
+
+        document
+            .getElementById("errorMessage")
+            .textContent = "";
+
+
+        document
+            .getElementById("resultContainer")
+            .classList.add("hidden");
+
+
+        document
+            .getElementById("emptyResult")
+            .classList.remove("hidden");
+
+
+        document
+            .getElementById("resultStatus")
+            .style.background = "#64748b";
+
+
+        document
+            .getElementById("resultStatus")
+            .style.boxShadow = "none";
+
+
+        document
+            .querySelectorAll(".type-option")
+            .forEach(option => {
+
+                option.classList.remove("active");
+
+            });
+
+    });
+
