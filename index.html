@@ -1,94 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Type Predictor</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayWise AI — Room Type Predictor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Room Type Predictor</h1>
-        <p class="subtitle">Enter listing details to predict the room type</p>
-        
-        <form id="predictionForm">
-            <div class="form-grid">
-                <!-- Neighbourhood Group -->
-                <div class="form-group">
-                    <label for="neighbourhood_group">Neighbourhood Group</label>
-                    <select id="neighbourhood_group" required>
-                        <option value="" disabled selected>Select Group</option>
-                        <option value="Brooklyn">Brooklyn</option>
-                        <option value="Manhattan">Manhattan</option>
-                        <option value="Queens">Queens</option>
-                        <option value="Staten Island">Staten Island</option>
-                        <option value="Bronx">Bronx</option>
-                    </select>
-                </div>
 
-                <!-- Neighbourhood -->
-                <div class="form-group">
-                    <label for="neighbourhood">Neighbourhood</label>
-                    <input type="text" id="neighbourhood" placeholder="e.g., Williamsburg" required>
-                </div>
+  <div class="glow glow-blue"></div>
+  <div class="glow glow-purple"></div>
 
-                <!-- Latitude -->
-                <div class="form-group">
-                    <label for="latitude">Latitude</label>
-                    <input type="number" id="latitude" step="any" placeholder="e.g., 40.7128" required>
-                </div>
+  <nav class="navbar">
+    <a href="#" class="brand">
+      <span class="brand-icon">✦</span>
+      <span>StayWise <b>AI</b></span>
+    </a>
+    <div class="online"><span></span> Model Online</div>
+  </nav>
 
-                <!-- Longitude -->
-                <div class="form-group">
-                    <label for="longitude">Longitude</label>
-                    <input type="number" id="longitude" step="any"  placeholder="e.g., -74.0060" required>
-                </div>
+  <main class="container">
 
-                <!-- Price -->
-                <div class="form-group">
-                    <label for="price">Price ($)</label>
-                    <input type="number" id="price" min="1" placeholder="e.g., 150" required>
-                </div>
+    <section class="hero">
+      <div class="eyebrow">AI ROOM TYPE CLASSIFIER</div>
+      <h1>Discover the <span>room type</span><br>your listing matches.</h1>
+      <p>
+        Enter your property's details and let our machine-learning model
+        classify it as an entire home, private room, or shared room.
+      </p>
+    </section>
 
-                <!-- Minimum Nights -->
-                <div class="form-group">
-                    <label for="minimum_nights">Minimum Nights</label>
-                    <input type="number" id="minimum_nights" min="0" placeholder="e.g., 2" required>
-                </div>
+    <section class="workspace">
 
-                <!-- Number of Reviews -->
-                <div class="form-group">
-                    <label for="number_of_reviews">Number of Reviews</label>
-                    <input type="number" id="number_of_reviews" min="0" placeholder="e.g., 45" required>
-                </div>
+      <form id="predictionForm" class="panel form-panel">
 
-                <!-- Reviews Per Month -->
-                <div class="form-group">
-                    <label for="reviews_per_month">Reviews Per Month</label>
-                    <input type="number" id="reviews_per_month" min="0" placeholder="e.g., 2" required>
-                </div>
-
-                <!-- Host Listings Count -->
-                <div class="form-group">
-                    <label for="calculated_host_listings_count">Host Listings Count</label>
-                    <input type="number" id="calculated_host_listings_count" min="0" placeholder="e.g., 1" required>
-                </div>
-
-                <!-- Availability 365 -->
-                <div class="form-group">
-                    <label for="availability_365">Availability (0-365)</label>
-                    <input type="number" id="availability_365" min="0" max="365" placeholder="e.g., 240" required>
-                </div>
-            </div>
-
-            <button type="submit" id="submitBtn">Predict Room Type</button>
-        </form>
-
-        <div id="resultContainer" class="result-card hidden">
-            <h3>Prediction Result:</h3>
-            <div id="resultValue" class="result-value"></div>
+        <div class="panel-title">
+          <div>
+            <small>PROPERTY PROFILE</small>
+            <h2>Enter listing details</h2>
+          </div>
+          <div class="input-count">10 fields</div>
         </div>
-    </div>
-    <script src="script.js"></script>
+
+        <div class="section-title">Location</div>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>Neighbourhood group</span>
+            <select id="neighbourhood_group" required>
+              <option value="" disabled selected>Select borough</option>
+              <option>Brooklyn</option>
+              <option>Manhattan</option>
+              <option>Queens</option>
+              <option>Staten Island</option>
+              <option>Bronx</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Neighbourhood</span>
+            <input id="neighbourhood" type="text" placeholder="e.g. Williamsburg" required>
+          </label>
+
+          <label class="field">
+            <span>Latitude</span>
+            <input id="latitude" type="number" step="any" placeholder="40.7128" required>
+          </label>
+
+          <label class="field">
+            <span>Longitude</span>
+            <input id="longitude" type="number" step="any" placeholder="-74.0060" required>
+          </label>
+        </div>
+
+        <div class="section-title">Property & stay</div>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>Price <em>USD / night</em></span>
+            <input id="price" type="number" min="1" placeholder="150" required>
+          </label>
+
+          <label class="field">
+            <span>Minimum nights</span>
+            <input id="minimum_nights" type="number" min="0" placeholder="2" required>
+          </label>
+
+          <label class="field">
+            <span>Availability <em>days / year</em></span>
+            <input id="availability_365" type="number" min="0" max="365" placeholder="180" required>
+          </label>
+        </div>
+
+        <div class="section-title">Listing performance</div>
+
+        <div class="field-grid">
+          <label class="field">
+            <span>Number of reviews</span>
+            <input id="number_of_reviews" type="number" min="0" placeholder="85" required>
+          </label>
+
+          <label class="field">
+            <span>Reviews per month</span>
+            <input id="reviews_per_month" type="number" min="0" step="any" placeholder="2.4" required>
+          </label>
+
+          <label class="field">
+            <span>Host listings count</span>
+            <input id="calculated_host_listings_count" type="number" min="0" placeholder="3" required>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="predictBtn" class="predict-btn" type="submit">
+            <span class="btn-label">Predict room type</span>
+            <span class="spinner"></span>
+            <span class="btn-arrow">→</span>
+          </button>
+
+          <button id="resetBtn" class="reset-btn" type="button">Reset</button>
+        </div>
+
+        <p id="error" class="error"></p>
+      </form>
+
+      <aside class="panel result-panel">
+
+        <div class="result-header">
+          <small>AI PREDICTION</small>
+          <span id="statusDot"></span>
+        </div>
+
+        <div id="emptyState" class="empty-state">
+          <div class="prediction-icon">✦</div>
+          <h3>Ready to classify</h3>
+          <p>
+            Fill in the property details and your prediction
+            will appear here.
+          </p>
+
+          <div class="possible-types">
+            <div><span>🏠</span> Entire Home</div>
+            <div><span>🔒</span> Private Room</div>
+            <div><span>👥</span> Shared Room</div>
+          </div>
+        </div>
+
+        <div id="predictionState" class="prediction-state hidden">
+
+          <div id="typeIcon" class="large-type-icon">🏠</div>
+
+          <p class="prediction-label">Predicted room type</p>
+
+          <h2 id="predictionText">Entire Home / Apartment</h2>
+
+          <p id="predictionDescription" class="prediction-description">
+            Your listing is predicted to be an entire home or apartment.
+          </p>
+
+          <div class="success-box">
+            <span>✓</span>
+            <div>
+              <strong>Prediction generated</strong>
+              <small>Response received successfully from the AI model.</small>
+            </div>
+          </div>
+
+          <div class="type-selector">
+            <div class="type-option" data-type="entire">
+              <span>🏠</span>
+              <small>Entire Home</small>
+            </div>
+            <div class="type-option" data-type="private">
+              <span>🔒</span>
+              <small>Private Room</small>
+            </div>
+            <div class="type-option" data-type="shared">
+              <span>👥</span>
+              <small>Shared Room</small>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="tip">
+          <span>💡</span>
+          <p>
+            <b>Note:</b> The final room type is determined by your
+            trained machine-learning model.
+          </p>
+        </div>
+
+      </aside>
+    </section>
+
+    <section class="info-grid">
+      <div class="info-card">
+        <span>01</span>
+        <h3>Location aware</h3>
+        <p>Uses borough, neighbourhood and geographical coordinates.</p>
+      </div>
+
+      <div class="info-card">
+        <span>02</span>
+        <h3>Listing signals</h3>
+        <p>Analyzes price, reviews, availability and host activity.</p>
+      </div>
+
+      <div class="info-card">
+        <span>03</span>
+        <h3>AI classification</h3>
+        <p>Predicts one of three room categories from your model.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    StayWise AI · Machine Learning Room Type Classifier
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
