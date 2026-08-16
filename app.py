@@ -40,10 +40,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows Content-Type and other standard headers
 )
 
-@app.get("/")
-def home():
-    return {"message": "running"}
-
 @app.post('/predict')
 def predict(data: User):
     input_df = pd.DataFrame([
